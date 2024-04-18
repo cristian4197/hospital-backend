@@ -4,14 +4,29 @@ const User = require('../models/user.model');
 const { generateJWT } = require('../helpers/jwt');
 
 const getUsers = async (req, res) => {
+    // Obtener los queryParams
+    // Hacemos una paginación para mostrar desde el registro "from"
+    const from = Number(req.query.from) || 0;
+    console.log(from);
     // Obtiene todos los usuarios
     // El {} hace que se filtre el get
-    const users = await User.find({}, 'name email role google');
+
+   const [ users, total ] = await Promise.all([
+        User.find({}, 'name email role google img')
+            .skip(from)
+            .limit(5),
+
+        User.countDocuments()
+    ]);
+
+
     res.json({
         ok: true,
         users,
         // Este valor del uid lo obtenemos desde el middleware
-        uid: req.uid
+        // Esto nos retorno el uid del que esta haciendo la petición
+        uid: req.uid,
+        total
     });
 };
 
