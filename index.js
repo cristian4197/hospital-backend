@@ -11,6 +11,9 @@ const app = express();
 // Configurar cors
 app.use(cors());
 
+// Carpeta publica
+app.use(express.static('public'));
+
 //Lectura y parseo de Body
 // Se coloca antes de las rutas
 app.use(express.json());
