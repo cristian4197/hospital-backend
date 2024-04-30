@@ -27,10 +27,12 @@ router.post('/',
 
 router.put('/:id',
    [
+    validateJWT,
+    check('hospital','hospitalid is not valid').isMongoId(),
    ] ,
    updateDoctor);
 
-router.delete('/:id', deleteDoctor);
+router.delete('/:id', validateJWT ,deleteDoctor);
 
 
 module.exports = router;

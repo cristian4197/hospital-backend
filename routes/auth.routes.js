@@ -2,8 +2,9 @@
  * Path: /api/login
  */
 
+const { validateJWT } = require('../middlewares/validator-jwt');
 const { Router } = require('express');
-const { login, googleSignIng } = require('../controllers/auth.controller');
+const { login, googleSignIng, renewToken } = require('../controllers/auth.controller');
 const { check } = require('express-validator');
 const { validatorInputs } = require('../middlewares/validator-inputs');
 
@@ -27,5 +28,9 @@ router.post('/google',
     googleSignIng
 );
 
+router.get('/renew',
+    validateJWT,
+    renewToken
+);
 
 module.exports = router;

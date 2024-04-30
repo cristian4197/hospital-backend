@@ -30,26 +30,75 @@ const createDoctor = async (req, res = response) => {
         console.log(error);
         res.status(500).json({
             ok: false,
-            msg: 'Error inesperado... revisar logs'
+            msg: 'Unexpected error... check logs'
         });
     }
     
 }
 
-const updateDoctor = (req, res = response) => {
+const updateDoctor = async (req, res = response) => {
     const { id } = req.params;
-    res.json({
-        ok: true,
-        msg: `Actualización de médico exitosa con ${ id }`
-    });
+    const uid = req.uid;
+
+    try {
+        const doctorDB = await Doctor.findById(id);
+
+        if(!doctorDB) {
+            res.status(404).json({
+                ok: false,
+                msg: 'Doctor is not found'
+            });
+        }
+    
+        const changesDoctor = {
+            ...req.body,
+                user: uid
+        };
+
+        const doctorUpdate = await Doctor.findByIdAndUpdate(id, changesDoctor, { new: true });
+
+        res.json({
+            ok: true,
+            msg: `Successful doctor update with ${ id }`,
+            doctor: doctorUpdate
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Unexpected error... check logs'
+        });
+    }
+
 }
 
-const deleteDoctor = (req, res = response) => {
+const deleteDoctor = async (req, res = response) => {
     const { id } = req.params;
-    res.json({
-        ok: true,
-        msg: `Eliminación de médico exitosa con ${ id }`
-    });
+
+    try {
+        const doctorDB = await Doctor.findById(id);
+
+        if(!doctorDB) {
+            res.status(404).json({
+                ok: false,
+                msg: 'Doctor is not found'
+            });
+        }
+
+        await Doctor.findByIdAndDelete(id);
+
+        res.json({
+            ok: true,
+            msg: `Doctor removed correctly`
+        });
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+           msg: 'Unexpected error... check logs'
+        });
+    }
+    
 }
 
 module.exports = {

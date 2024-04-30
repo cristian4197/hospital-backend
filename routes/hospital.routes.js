@@ -23,11 +23,13 @@ router.post('/',
 );
 
 router.put('/:id',
-   [
+   [    
+        validateJWT,
+        check('name','name of hospital is required').not().isEmpty(),
    ] ,
     updateHospital);
 
-router.delete('/:id', deleteHospital);
+router.delete('/:id', validateJWT ,deleteHospital);
 
 
 module.exports = router;

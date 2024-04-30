@@ -32,7 +32,7 @@ const login = async (req, res = response) => {
         res.json({
             ok: true,
             token
-        })
+        });
 
     } catch (error) {
         res.status(500).json({
@@ -85,7 +85,18 @@ const googleSignIng = async (req, res = response) => {
     
 }
 
+const renewToken = async (req, res = response) => {
+    const uid = req.uid;
+    //Generar el token
+    const token = await generateJWT(uid);
+    res.json({
+        ok: true,
+        token
+    });
+};
+
 module.exports = {
     login,
-    googleSignIng
+    googleSignIng,
+    renewToken
 }
