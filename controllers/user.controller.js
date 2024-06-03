@@ -7,14 +7,14 @@ const getUsers = async (req, res) => {
     // Obtener los queryParams
     // Hacemos una paginación para mostrar desde el registro "from"
     const from = Number(req.query.from) || 0;
-    console.log(from);
     // Obtiene todos los usuarios
     // El {} hace que se filtre el get
 
    const [ users, total ] = await Promise.all([
-        User.find({}, 'name email role google img')
-            .skip(from)
-            .limit(5),
+        User.find({}, 'name email role google img'),
+        // Para limitar el numero de registros a mostrar
+            // .skip(from)
+            // .limit(5),
 
         User.countDocuments()
     ]);
@@ -89,7 +89,6 @@ const updateUser = async (req, res = response) => {
         }
         // Actualizar usuario
         const {password, google, email, ...inputs} = req.body;
-
         if(userDb.email !== req.body.email) {
             const emailExists = await User.findOne({ email });
             if(emailExists) {
@@ -100,7 +99,16 @@ const updateUser = async (req, res = response) => {
             }
         }
 
-        inputs.email = email;
+        // Se añade actualizacion de email si no es de google
+        if(!userDb.google) {
+            inputs.email = email;
+        } else if(userDb.email !== email) {
+            // Si desde front se intenta cambiar el email, aqui lo bloqueamos
+           return res.status(400).json({
+                ok: false,
+               msg: 'google user cannot change their email'
+            });
+        }
         // { new: true } esto se pone para que retorne el user actualizado de lo contrario te retorna el anterior
         const userUpdated = await User.findByIdAndUpdate(uid, inputs, { new: true });
 
