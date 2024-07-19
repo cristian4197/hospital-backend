@@ -49,7 +49,7 @@ const getUserById = async (req, res) => {
                 msg: 'No existe usuario con ese id'
             });
         }
-        res.json({
+        return res.json({
             ok: true,
             user
         });

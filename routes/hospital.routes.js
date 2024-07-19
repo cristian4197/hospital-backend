@@ -5,13 +5,15 @@
 
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { getHospitals, createHospital, updateHospital, deleteHospital } = require('../controllers/hospital.controller');
+const { getHospitals, createHospital, updateHospital, deleteHospital, getHospitalById } = require('../controllers/hospital.controller');
 const { validateJWT } = require('../middlewares/validator-jwt');
 const { validatorInputs } = require('../middlewares/validator-inputs');
 
 const router = Router();
 
 router.get('/', validateJWT, getHospitals);
+
+router.get('/detail', validateJWT ,getHospitalById);
 
 router.post('/', 
     [

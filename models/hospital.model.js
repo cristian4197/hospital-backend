@@ -16,9 +16,15 @@ const HospitalSchema = Schema({
     }
 });
 
-HospitalSchema.method('toJSON', function() {
+HospitalSchema.method('toJSON', function () {
     // this.toObject(), nos devuelve la instancia actual
-    const {__v, ...object } = this.toObject();
+    const { __v, _id, user, ...object } = this.toObject();
+    object.uid = _id;
+    object.user = {
+        name: user.name,
+        img: user.img,
+        uid: user._id
+    };
     return object;
 });
 module.exports = model('Hospital', HospitalSchema);
